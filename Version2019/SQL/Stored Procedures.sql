@@ -3,6 +3,8 @@ USE EmaSysDB;
 DROP PROCEDURE IF EXISTS spmostrar_proveedor_codigonombre;
 DROP PROCEDURE IF EXISTS sp_ListaCuentasDescripcion;
 DROP PROCEDURE IF EXISTS sp_InsertarFacturaProveedor;
+DROP PROCEDURE IF EXISTS sp_ListaProvincias;
+DROP PROCEDURE IF EXISTS sp_ListaMonedas;
 GO
 
 CREATE PROCEDURE spmostrar_proveedor_codigonombre
@@ -46,4 +48,18 @@ AS
     INSERT INTO FacturasProveedores (Proveedor,  TipoFactura,  Sucursal,  Documento,  FechaFactura, FechaCarga,  FechaVencimiento, MontoNeto,  MontoExento,  PorcentajeIVA,  MontoIVA,  PorcentajePercepcionIVA,  MontoPercepcionIVA,  PorcentajeIIBB,  MontoIIBB,  Material,  Provincia,  BienDeUso,  Activo,  Total,  Observaciones)
     VALUES                          (@Proveedor, @TipoFactura, @Sucursal, @Documento, @Fecha      , @FechaCarga, @Vencimiento,     @MontoNeto, @MontoExento, @PorcentajeIVA, @MontoIVA, @PorcentajePercepcionIVA, @MontoPercepcionIVA, @PorcentajeIIBB, @MontoIIBB, @Material, @Provincia, @BienDeUso, @Activo, @Total, @Observaciones)
 
+GO
+
+CREATE PROCEDURE sp_ListaProvincias
+AS
+    SELECT Letra, Nombre FROM Provincias
+    ORDER BY ID ASC
+    
+GO
+
+CREATE PROCEDURE sp_ListaMonedas
+AS
+    SELECT Codigo, Nombre FROM Monedas
+    ORDER BY ID ASC
+    
 GO
