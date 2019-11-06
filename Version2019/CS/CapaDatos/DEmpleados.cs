@@ -369,7 +369,8 @@ namespace CapaDatos
             }
             catch (Exception ex)
             {
-                DtResultado = null;
+				string a = ex.ToString();
+				DtResultado = null;
             }
             return DtResultado;
         }

@@ -556,6 +556,7 @@ namespace CapaDatos
             }
             catch(Exception ex)
             {
+				string a = ex.ToString();
                 DtResultado = null;
             }
             return DtResultado;

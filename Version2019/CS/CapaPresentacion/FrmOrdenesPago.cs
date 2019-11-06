@@ -1,0 +1,390 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using System.Globalization;
+
+using CapaNegocio;
+
+namespace CapaPresentacion
+{
+	public partial class FrmOrdenesPago : Form, IIBBCaller
+	{
+		bool mutex;
+
+		bool arbaCheck;
+		bool cabaCheck;
+		bool exento;
+
+		List<LineaIIBB> lineasIIBB;
+
+		decimal neto;
+		//decimal porcentajeIibb;
+		decimal iibb;
+		decimal porcentajeGanancias;
+		decimal ganancias;
+		decimal total;
+
+		AutoCompleteStringCollection collectionProvincias;
+
+		DataTable ListaProveedores;
+
+		List<LineaOrdenPago> lineasMovimientosPendientes;
+
+		public FrmOrdenesPago()
+		{
+			InitializeComponent();
+
+			DtpFechaIni.Value = DateTime.Now.AddYears(-1);
+			DtpFechaFin.Value = DateTime.Now.AddYears(1);
+
+			lineasMovimientosPendientes = new List<LineaOrdenPago>();
+			/*for (int i = 0; i < 5; i++)
+			{
+				LineaOrdenPago l = new LineaOrdenPago(this, i, "FA", "000123-00000678", "", "05-10-1983", "25-12-2020", "124.99");
+				lineasMovimientosPendientes.Add(l);
+			}*/
+
+			ListaProveedores = NProveedores.ListaCodigoNombre();
+			AutoCompleteStringCollection collectionCodigos = new AutoCompleteStringCollection();
+			for (int i = 0; i < ListaProveedores.Rows.Count; i++)
+			{
+				collectionCodigos.Add(ListaProveedores.Rows[i][0].ToString());
+			}
+			TxtCodigo.AutoCompleteCustomSource = collectionCodigos;
+			TxtCodigoLista.AutoCompleteCustomSource = collectionCodigos;
+
+			AutoCompleteStringCollection collectionNombres = new AutoCompleteStringCollection();
+			for (int i = 0; i < ListaProveedores.Rows.Count; i++)
+			{
+				collectionNombres.Add(ListaProveedores.Rows[i][1].ToString() + " [" + ListaProveedores.Rows[i][0].ToString() + "]");
+			}
+			TxtNombre.AutoCompleteCustomSource = collectionNombres;
+
+			DataTable provincias = NFacturasProveedores.ListaProvincias();
+			collectionProvincias = new AutoCompleteStringCollection();
+			for (int i = 0; i < provincias.Rows.Count; i++)
+			{
+				collectionProvincias.Add(provincias.Rows[i][1].ToString());
+			}
+
+			mutex = false;
+			arbaCheck = false;
+			cabaCheck = false;
+			exento = false;
+		}
+
+		public Panel Panel
+		{
+			get
+			{
+				return PnlPendientes;
+			}
+		}
+
+		private void TxtCodigo_TextChanged(object sender, EventArgs e)
+		{
+			if (!mutex)
+			{
+				mutex = true;
+
+				LblPadronARBA.Text = "---";
+				LblPadronCABA.Text = "---";
+
+				TxtNombre.Text = "";
+				for (int i = 0; i < ListaProveedores.Rows.Count; i++)
+				{
+					if (ListaProveedores.Rows[i][0].ToString() == TxtCodigo.Text)
+					{
+						TxtNombre.Text = ListaProveedores.Rows[i][1].ToString();
+						break;
+					}
+				}
+				mutex = false;
+			}
+		}
+
+		private void TextBoxSelectAll(object sender, EventArgs e)
+		{
+			Tools.TextBoxSelectAll(sender, e);
+		}
+
+		private void TxtCodigo_Leave(object sender, EventArgs e)
+		{
+			TxtCodigo.Text = TxtCodigo.Text.PadLeft(4, '0');
+			CheckProveedor();
+		}
+
+		private void TxtNombre_TextChanged(object sender, EventArgs e)
+		{
+			if (!mutex)
+			{
+				mutex = true;
+
+				LblPadronARBA.Text = "---";
+				LblPadronCABA.Text = "---";
+
+				BtnGuardar.Enabled = false;
+
+				TxtCodigo.Text = "";
+				if (TxtNombre.Text.Length > 7)
+				{
+					String suffix = TxtNombre.Text.Substring(TxtNombre.Text.Length - 7);
+					String pattern = @"^ \[\d{4}\]$";
+					if (Regex.Match(suffix, pattern).Success)
+					{
+						String number = suffix.Substring(2, 4);
+						TxtCodigo.Text = number;
+					}
+				}
+				mutex = false;
+			}
+		}
+
+		private void TxtNombre_Leave(object sender, EventArgs e)
+		{
+			CheckProveedor();
+		}
+
+		private void CheckProveedor()
+		{
+			NegocioResult arba = NProveedores.ValidarPadronARBA(TxtCodigo.Text);
+			arbaCheck = arba.IsOK;
+			LblPadronARBA.Text = arbaCheck ? "OK" : arba.GetMessage();
+
+
+			NegocioResult caba = NProveedores.ValidarPadronCABA(TxtCodigo.Text);
+			cabaCheck = caba.IsOK;
+			LblPadronCABA.Text = cabaCheck ? "OK" : caba.GetMessage();
+
+			exento = NProveedores.EsExento(TxtCodigo.Text);
+
+			if (exento)
+			{
+				TxtPorcentajeIIBB.Text = "0.00";
+				TxtPorcentajeIIBB.Enabled = false;
+				TxtMontoIIBB.Text = "0.00";
+				TxtMontoIIBB.Enabled = false;
+				TxtPorcentajeGanancias.Text = "0.00";
+				TxtPorcentajeGanancias.Enabled = false;
+				TxtMontoGanancias.Text = "0.00";
+				TxtMontoGanancias.Enabled = false;
+			}
+			else
+			{
+				TxtPorcentajeIIBB.Enabled = true;
+				TxtMontoIIBB.Enabled = true;
+				TxtPorcentajeGanancias.Enabled = true;
+				TxtMontoGanancias.Enabled = true;
+			}
+
+			/*
+			// Despacho Importacion
+			bool conDespacho = false;
+			try
+			{
+				int cod = Convert.ToInt32(txtCodigo.Text);
+				if (cod >= 8000 && cod <= 8590)
+				{
+					conDespacho = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			if (conDespacho)
+			{
+				txtDespacho.Enabled = true;
+			}
+			else
+			{
+				txtDespacho.Text = "";
+				txtDespacho.Enabled = false;
+			}
+
+			// Condición de IVA
+			string CondicionIVA = NProveedores.CondicionIVA(txtCodigo.Text);
+			switch (CondicionIVA)
+			{
+				case "I":
+					cbbTipoFactura.SelectedIndex = 0;
+					txtPorcentajeIVA.Text = "21";
+					txtPorcentajeIVA_Leave(null, null);
+					break;
+				case "N":
+				case "E":
+				case "M":
+					cbbTipoFactura.SelectedIndex = 2;
+					txtPorcentajeIVA.Text = "0";
+					txtPorcentajeIVA_Leave(null, null);
+					break;
+				case "X":
+					cbbTipoFactura.SelectedIndex = 3;
+					txtPorcentajeIVA.Text = "0";
+					txtPorcentajeIVA_Leave(null, null);
+					break;
+				default:
+					break;
+			}*/
+		}
+
+		private void CleanListaMovimientos()
+		{
+			for (int i = 0; i < lineasMovimientosPendientes.Count; i++)
+			{
+				lineasMovimientosPendientes[i].RemoveFromContainer();
+			}
+			lineasMovimientosPendientes.Clear();
+		}
+
+		private void BtnActualizar_Click(object sender, EventArgs e)
+		{
+			CleanListaMovimientos();
+
+			DataTable pendientes = NFacturasProveedores.MovimientosAPagar(TxtCodigo.Text, DtpFechaIni.Value, DtpFechaFin.Value);
+
+			for (int i = 0; i < pendientes.Rows.Count; i++)
+			{
+				decimal monto = NFacturasProveedores.MontoPendiente(Convert.ToInt32(pendientes.Rows[i]["ID"]));
+
+				LineaOrdenPago l = new LineaOrdenPago(this, i,
+					Convert.ToInt32(pendientes.Rows[i]["ID"]),
+					pendientes.Rows[i]["Tipo"].ToString(),
+					pendientes.Rows[i]["Documento"].ToString(),
+					pendientes.Rows[i]["Contradocumento"].ToString(),
+					((DateTime)pendientes.Rows[i]["Fecha"]).ToString("yyyy-MM-dd"),
+					((DateTime)pendientes.Rows[i]["Vencimiento"]).ToString("yyyy-MM-dd"),
+					monto.ToString("N2", CultureInfo.InvariantCulture));
+				lineasMovimientosPendientes.Add(l);
+			}
+
+			// ver si es exento
+			if (!exento)
+			{
+				// ver si esta en padron arba
+				if (arbaCheck)
+				{
+					// usar el porcentaje de arba
+					//porcentajeIibb = NProveedores.AlicuotaIIBB_ARBA(TxtCodigo.Text) / 100;
+				}
+				else if (cabaCheck)
+				{
+					// poner el porcentaje de caba
+					//porcentajeIibb = NProveedores.AlicuotaIIBB_CABA(TxtCodigo.Text) / 100;
+				}
+			}
+			//Tools.TwoDecimalsNumberInTextBox(porcentajeIibb, TxtPorcentajeIIBB, true);
+
+			/*if (arbaCheck || cabaCheck)
+			{
+				BtnGuardar.Enabled = true;
+			}
+			else
+			{
+				MessageBox.Show("Los padrones no se encuentra actualizados para este proveedor.", "Actualizar Padrón", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}*/
+		}
+
+		public void ActualizarNeto()
+		{
+			neto = 0;
+			for (int i = 0; i < lineasMovimientosPendientes.Count; i++)
+			{
+				neto += lineasMovimientosPendientes[i].GetPago();
+			}
+			//iibb = neto * porcentajeIibb;
+			Tools.TwoDecimalsNumberInTextBox(iibb, TxtMontoIIBB);
+			ganancias = neto * porcentajeGanancias;
+			Tools.TwoDecimalsNumberInTextBox(ganancias, TxtMontoGanancias);
+
+			ActualizarTotal();
+		}
+
+		public void ActualizarTotal()
+		{
+			total = neto - iibb - ganancias;
+			string strTotal = total.ToString("N2", CultureInfo.InvariantCulture);
+			int right = LblTotal.Left + LblTotal.Width;
+			LblTotal.Text = "Total: $" + strTotal;
+			LblTotal.Left = right - LblTotal.Width;
+		}
+
+		private void BtnGuardar_Click(object sender, EventArgs e)
+		{
+			DateTime fecha = DateTime.Today;
+			List<Tuple<int, decimal>> pagos = new List<Tuple<int, decimal>>();
+
+			for (int i = 0; i < lineasMovimientosPendientes.Count; i++)
+			{
+				if (lineasMovimientosPendientes[i].pago != 0m)
+				{
+					pagos.Add(new Tuple<int, decimal>(
+						lineasMovimientosPendientes[i].movimiento,
+						lineasMovimientosPendientes[i].pago));
+				}
+			}
+
+			NegocioResult r = NOrdenesPago.Validar(fecha, pagos);
+			if (!arbaCheck)
+			{
+				//r.AddError("El proveedor no se encuentra actualizado en el padron de ARBA.");
+			}
+			if (!cabaCheck)
+			{
+				//r.AddError("El proveedor no se encuentra actualizado en el padron de CABA.");
+			}
+
+			if (exento && (iibb != 0 || ganancias != 0))
+			{
+				r.AddError("El proveedor es exento. Los impuestos deben ser cero.");
+			}
+
+			if (r.IsOK)
+			{
+				//r = NOrdenesPago.Guardar(fecha, porcentajeIibb, iibb, porcentajeGanancias, ganancias, pagos);
+				r = NOrdenesPago.Guardar(fecha, 0, iibb, porcentajeGanancias, ganancias, pagos);
+			}
+
+			if (r.IsOK)
+			{
+				MessageBox.Show(r.GetMessage(), "Guardar");
+			}
+			else
+			{
+				MessageBox.Show(r.GetMessage(), "Error al guardar orden de pago", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			BtnActualizar_Click(null, null);
+		}
+
+		private void BtnIIBB_Click(object sender, EventArgs e)
+		{
+			FrmIIBB frmiibb = new FrmIIBB(this, collectionProvincias);
+			frmiibb.SetLineas(lineasIIBB);
+			frmiibb.ShowDialog();
+		}
+
+		public decimal GetMontoNeto()
+		{
+			return neto;
+		}
+
+		public void SetLineasIIBB(List<LineaIIBB> lineas)
+		{
+			iibb = 0;
+			lineasIIBB = lineas;
+			for (int i = 0; i < lineasIIBB.Count; i++)
+			{
+				iibb += lineasIIBB[i].Monto;
+			}
+			Tools.TwoDecimalsNumberInTextBox(iibb, TxtMontoIIBB);
+			ActualizarTotal();
+		}
+	}
+}

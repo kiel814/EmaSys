@@ -47,8 +47,11 @@
     <Compile Include="NEmpleados.cs" />
     <Compile Include="NFacturasProveedores.cs" />
     <Compile Include="NLibroDiario.cs" />
+    <Compile Include="NLineaIIBB.cs" />
+    <Compile Include="NOrdenesPago.cs" />
     <Compile Include="NProveedores.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NegocioResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">

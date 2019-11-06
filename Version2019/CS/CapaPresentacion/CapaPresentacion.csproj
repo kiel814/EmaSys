@@ -87,17 +87,23 @@
     <Compile Include="FrmFacturasProveedores.Designer.cs">
       <DependentUpon>FrmFacturasProveedores.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmLibroDiario.cs">
+    <Compile Include="FrmIIBB.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmLibroDiario.Designer.cs">
-      <DependentUpon>FrmLibroDiario.cs</DependentUpon>
+    <Compile Include="FrmIIBB.Designer.cs">
+      <DependentUpon>FrmIIBB.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmLogin.Designer.cs">
       <DependentUpon>FrmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmOrdenesPago.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmOrdenesPago.Designer.cs">
+      <DependentUpon>FrmOrdenesPago.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmPrincipal.cs">
       <SubType>Form</SubType>
@@ -117,7 +123,10 @@
     <Compile Include="FrmProveFox.Designer.cs">
       <DependentUpon>FrmProveFox.cs</DependentUpon>
     </Compile>
+    <Compile Include="IIBBCaller.cs" />
+    <Compile Include="LineaIIBB.cs" />
     <Compile Include="LineaLibroDiario.cs" />
+    <Compile Include="LineaOrdenPago.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -166,6 +175,7 @@
       <DependentUpon>FrmReporteProveedores.cs</DependentUpon>
     </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="ValidacionF.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -187,11 +197,14 @@
     <EmbeddedResource Include="FrmFacturasProveedores.resx">
       <DependentUpon>FrmFacturasProveedores.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmLibroDiario.resx">
-      <DependentUpon>FrmLibroDiario.cs</DependentUpon>
+    <EmbeddedResource Include="FrmIIBB.resx">
+      <DependentUpon>FrmIIBB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmOrdenesPago.resx">
+      <DependentUpon>FrmOrdenesPago.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPrincipal.resx">
       <DependentUpon>FrmPrincipal.cs</DependentUpon>

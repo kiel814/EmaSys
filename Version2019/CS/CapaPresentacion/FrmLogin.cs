@@ -56,6 +56,24 @@ namespace CapaPresentacion
                 //oculto el formulario FrmLogin
                 this.Hide();
             }
-        }
-    }
+		}
+
+		private void txtUsuario_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				e.SuppressKeyPress = true;
+				btnIngresar_Click(null, null);
+			}
+		}
+
+		private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.KeyCode == Keys.Enter)
+			{
+				e.SuppressKeyPress = true;
+				btnIngresar_Click(null, null);
+			}
+		}
+	}
 }

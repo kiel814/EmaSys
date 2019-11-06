@@ -26,6 +26,7 @@ CREATE TABLE Provincias (
     ID          INT IDENTITY (1, 1),
     Letra       VARCHAR(1),
     Nombre      VARCHAR(25),
+    CuentaIIBB  VARCHAR(6),
     
     CONSTRAINT PK_Provincias PRIMARY KEY (ID),
     CONSTRAINT UC_Provincias_Letra UNIQUE (Letra)
@@ -63,32 +64,32 @@ INSERT INTO Cuentas (Cuenta, Descripcion, Debe, Haber, Moneda) VALUES ('120201',
 INSERT INTO Cuentas (Cuenta, Descripcion, Debe, Haber, Moneda) VALUES ('120228', 'Anticipo IVA Percepciones Proveedores', 0, 0, 'PES');
 INSERT INTO Cuentas (Cuenta, Descripcion, Debe, Haber, Moneda) VALUES ('120229', 'Anticipo IIBB Santa Fe', 0, 0, 'PES');
 
-INSERT INTO Provincias (Letra, Nombre) VALUES ('C', 'Capital Federal');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('B', 'Buenos Aires');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('X', 'Cordoba');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('W', 'Corrientes');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('H', 'Chaco');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('U', 'Chubut');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('E', 'Entre Rios');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('L', 'La Pampa');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('M', 'Mendoza');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('N', 'Misiones');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('Q', 'Neuquen');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('R', 'Rio Negro');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('A', 'Salta');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('J', 'San Juan');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('Z', 'Santa Cruz');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('S', 'Santa Fe');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('G', 'Santiago del Estero');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('T', 'Tucuman');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('D', 'San Luis');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('F', 'La Rioja');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('K', 'Catamarca');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('P', 'Formosa');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('V', 'Tierra del Fuego');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('Y', 'Jujuy');
-INSERT INTO Provincias (Letra, Nombre) VALUES ('6', 'Internacional');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('C', 'Capital Federal', '120218');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('B', 'Buenos Aires', '120216');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('X', 'Cordoba', '120215');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('W', 'Corrientes', '120236');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('H', 'Chaco', '120245');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('U', 'Chubut', '120231');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('E', 'Entre Rios', '120235');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('L', 'La Pampa', '120257');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('M', 'Mendoza', '120232');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('N', 'Misiones', '120237');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('Q', 'Neuquen', '120242');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('R', 'Rio Negro', '120238');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('A', 'Salta', '120248');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('J', 'San Juan', '120253');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('Z', 'Santa Cruz', '120230');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('S', 'Santa Fe', '120229');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('G', 'Santiago del Estero', '120234');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('T', 'Tucuman', '120233');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('D', 'San Luis', '120258');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('F', 'La Rioja', '120241');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('K', 'Catamarca', '120256');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('P', 'Formosa', '120265');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('V', 'Tierra del Fuego', '120244');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('Y', 'Jujuy', '120239');
+INSERT INTO Provincias (Letra, Nombre, CuentaIIBB) VALUES ('6', 'Internacional', '120261');
 
-INSERT INTO Monedas (Codigo, Nombre) VALUES ('ARS', 'Pesos');
-INSERT INTO Monedas (Codigo, Nombre) VALUES ('USD', 'Dolares');
-INSERT INTO Monedas (Codigo, Nombre) VALUES ('EUR', 'Euros');
+INSERT INTO Monedas (Codigo, Nombre) VALUES ('ARS', 'Peso Argentino');
+INSERT INTO Monedas (Codigo, Nombre) VALUES ('USD', 'Dólar Estadounidense');
+INSERT INTO Monedas (Codigo, Nombre) VALUES ('EUR', 'Euro');

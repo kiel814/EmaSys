@@ -125,7 +125,7 @@ namespace CapaPresentacion
 
         private void facturasProveedoresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmFacturasProveedores frm = new FrmFacturasProveedores();
+            FrmFacturasProveedores frm = new FrmFacturasProveedores("");
             frm.MdiParent = this;
             frm.Show();
         }
@@ -261,5 +261,26 @@ namespace CapaPresentacion
         {
             Application.Exit();
         }
-    }
+
+		private void notasDeCreditoDeProveedoresToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FrmFacturasProveedores frm = new FrmFacturasProveedores("CR");
+			frm.MdiParent = this;
+			frm.Show();
+		}
+
+		private void notasDeDebitoDeProveedoresToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FrmFacturasProveedores frm = new FrmFacturasProveedores("DB");
+			frm.MdiParent = this;
+			frm.Show();
+		}
+
+		private void órdenesDePagoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FrmOrdenesPago frm = new FrmOrdenesPago();
+			frm.MdiParent = this;
+			frm.Show();
+		}
+	}
 }

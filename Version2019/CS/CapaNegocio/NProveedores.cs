@@ -122,7 +122,7 @@ namespace CapaNegocio
 
         public static DataTable ListaCodigoNombre()
         {
-            return new DProveedores().ListaCodigoNombre();
+            return DProveedores.ListaCodigoNombre();
         }
 
         //Método BuscarNombre que llama al método BuscarNombre de la clase DProveedores
@@ -150,7 +150,51 @@ namespace CapaNegocio
             DProveedores Obj = new DProveedores();
             Obj.TextoBuscar = textobuscar;
             return Obj.BuscarProCodigo(Obj);
-        }
-    }
+		}
+
+		//Método BuscarNombre que llama al método BuscarNombre de la clase DProveedores
+		//de la CapaDatos
+		public static string CondicionIVA(string codigo)
+		{
+			return DProveedores.CondicionIVA(codigo);
+		}
+
+		public static NegocioResult ValidarPadronARBA(string codigo)
+		{
+			NegocioResult r = new NegocioResult();
+			string str = DProveedores.ValidarPadronARBA(codigo);
+			if (str != "")
+			{
+				r.AddError(str);
+			}
+			return r;
+		}
+
+		public static NegocioResult ValidarPadronCABA(string codigo)
+		{
+			NegocioResult r = new NegocioResult();
+			string str = DProveedores.ValidarPadronCABA(codigo);
+			if (str != "")
+			{
+				r.AddError(str);
+			}
+			return r;
+		}
+
+		public static bool EsExento(string codigo)
+		{
+			return DProveedores.EsExento(codigo);
+		}
+
+		public static decimal AlicuotaIIBB_ARBA(string codigo)
+		{
+			return DProveedores.AlicuotaIIBB_ARBA(codigo);
+		}
+
+		public static decimal AlicuotaIIBB_CABA(string codigo)
+		{
+			return DProveedores.AlicuotaIIBB_CABA(codigo);
+		}
+	}
 }
 

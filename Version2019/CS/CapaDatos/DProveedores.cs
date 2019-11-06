@@ -702,7 +702,7 @@ namespace CapaDatos
             return DtResultado;
         }
 
-        public DataTable ListaCodigoNombre()
+        public static DataTable ListaCodigoNombre()
         {
             DataTable DtResultado = new DataTable("ListaCodigoNombre");
             SqlConnection SqlCon = new SqlConnection();
@@ -711,7 +711,7 @@ namespace CapaDatos
                 SqlCon.ConnectionString = Conexion.Cn;
                 SqlCommand SqlCmd = new SqlCommand();
                 SqlCmd.Connection = SqlCon;
-                SqlCmd.CommandText = "spmostrar_proveedor_codigonombre";
+                SqlCmd.CommandText = "sp_ProveedorCodigoNombre";
                 SqlCmd.CommandType = CommandType.StoredProcedure;
 
                 SqlDataAdapter SqlDat = new SqlDataAdapter(SqlCmd);
@@ -814,5 +814,242 @@ namespace CapaDatos
             return DtResultado;
         }
 
-    }
+		public static string CondicionIVA(string codigo)
+		{
+			string condicion = "";
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_CondicionIVA";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlParameter ParCondicion = new SqlParameter();
+				ParCondicion.ParameterName = "@CondicionIVA";
+				ParCondicion.SqlDbType = SqlDbType.VarChar;
+				ParCondicion.Size = 1;
+				ParCondicion.Direction = ParameterDirection.Output;
+				SqlCmd.Parameters.Add(ParCondicion);
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlCmd.ExecuteScalar();
+				condicion = (string)ParCondicion.Value;
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open)
+				{
+					SqlCon.Close();
+				}
+			}
+			return condicion;
+		}
+
+		public static string ValidarPadronARBA(string codigo)
+		{
+			string resultado = "";
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_ValidarPadronARBA";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlParameter ParResultado = new SqlParameter();
+				ParResultado.ParameterName = "@Resultado";
+				ParResultado.SqlDbType = SqlDbType.VarChar;
+				ParResultado.Size = 255;
+				ParResultado.Direction = ParameterDirection.Output;
+				SqlCmd.Parameters.Add(ParResultado);
+
+				SqlCmd.ExecuteScalar();
+				resultado = (string)ParResultado.Value;
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open)
+				{
+					SqlCon.Close();
+				}
+			}
+			return resultado;
+		}
+
+		public static string ValidarPadronCABA(string codigo)
+		{
+			string resultado = "";
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_ValidarPadronCABA";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlParameter ParResultado = new SqlParameter();
+				ParResultado.ParameterName = "@Resultado";
+				ParResultado.SqlDbType = SqlDbType.VarChar;
+				ParResultado.Size = 255;
+				ParResultado.Direction = ParameterDirection.Output;
+				SqlCmd.Parameters.Add(ParResultado);
+
+				SqlCmd.ExecuteScalar();
+				resultado = (string)ParResultado.Value;
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open)
+				{
+					SqlCon.Close();
+				}
+			}
+			return resultado;
+		}
+
+		public static bool EsExento(string codigo)
+		{
+			bool exento = false;
+
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_EsExento";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlParameter ParExento = new SqlParameter();
+				ParExento.ParameterName = "@Exento";
+				ParExento.SqlDbType = SqlDbType.Bit;
+				ParExento.Direction = ParameterDirection.Output;
+				SqlCmd.Parameters.Add(ParExento);
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlCmd.ExecuteScalar();
+
+				if (ParExento != null)
+				{
+					exento = (bool)ParExento.Value;
+				}
+			}
+			catch (Exception ex)
+			{
+				string a = ex.Message;
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open) SqlCon.Close();
+			}
+			return exento;
+		}
+
+		public static decimal AlicuotaIIBB_ARBA(string codigo)
+		{
+			decimal alicuota = 0;
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_AlicuotaIIBB_ARBA";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlParameter ParAlicuota = new SqlParameter("@Alicuota", SqlDbType.Decimal);
+				ParAlicuota.Direction = ParameterDirection.Output;
+				ParAlicuota.Precision = 4;
+				ParAlicuota.Scale = 2;
+				SqlCmd.Parameters.Add(ParAlicuota);
+
+				SqlCmd.ExecuteScalar();
+				alicuota = Convert.ToDecimal(ParAlicuota.Value);
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open)
+				{
+					SqlCon.Close();
+				}
+			}
+			return alicuota;
+		}
+
+		public static decimal AlicuotaIIBB_CABA(string codigo)
+		{
+			decimal alicuota = 0;
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_AlicuotaIIBB_CABA";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlParameter ParAlicuota = new SqlParameter("@Alicuota", SqlDbType.Decimal);
+				ParAlicuota.Direction = ParameterDirection.Output;
+				ParAlicuota.Precision = 4;
+				ParAlicuota.Scale = 2;
+				SqlCmd.Parameters.Add(ParAlicuota);
+
+				SqlCmd.ExecuteScalar();
+				alicuota = Convert.ToDecimal(ParAlicuota.Value);
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open)
+				{
+					SqlCon.Close();
+				}
+			}
+			return alicuota;
+		}
+	}
 }
