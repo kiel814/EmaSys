@@ -10,10 +10,11 @@ namespace CapaNegocio
 {
 	public class NLineaIIBB
 	{
-		public static NegocioResult InsertarLinea(int Movimiento, int Linea, string Provincia, decimal Porcentaje, decimal Monto)
+		public static NegocioResult InsertarLinea(string DocType, int DocId, int Linea, string Provincia, decimal Porcentaje, decimal Monto)
 		{
 			DLineaIIBB linea = new DLineaIIBB();
-			linea._Movimiento = Movimiento;
+			linea._DocType = DocType;
+			linea._DocId = DocId;
 			linea._Linea = Linea;
 			linea._Provincia = Provincia;
 			linea._Porcentaje = Porcentaje;

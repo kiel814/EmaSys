@@ -11,7 +11,8 @@ namespace CapaDatos
 {
 	public class DLineaIIBB
 	{
-		public int _Movimiento;
+		public String _DocType;
+		public int _DocId;
 		public int _Linea;
 		public String _Provincia;
 		public decimal _Porcentaje;
@@ -34,7 +35,8 @@ namespace CapaDatos
 				SqlCmd.CommandText = "sp_InsertarLineaIIBB";
 				SqlCmd.CommandType = CommandType.StoredProcedure;
 
-				SqlCmd.Parameters.Add("@Movimiento", SqlDbType.Int).Value = _Movimiento;
+				SqlCmd.Parameters.Add("@DocType", SqlDbType.VarChar, 2).Value = _DocType;
+				SqlCmd.Parameters.Add("@DocId", SqlDbType.Int).Value = _DocId;
 				SqlCmd.Parameters.Add("@Linea", SqlDbType.Int).Value = _Linea;
 				SqlCmd.Parameters.Add("@Provincia", SqlDbType.VarChar, 1).Value = _Provincia;
 				SqlParameter ParPorcIVA = SqlCmd.Parameters.Add("@Porcentaje", SqlDbType.Decimal);

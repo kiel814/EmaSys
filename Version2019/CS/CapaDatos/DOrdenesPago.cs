@@ -13,7 +13,6 @@ namespace CapaDatos
 	{
 		public int _ID;
 		public DateTime _Fecha;
-		public decimal _PorcentajeIIBB;
 		public decimal _MontoIIBB;
 		public decimal _PorcentajeGanancias;
 		public decimal _MontoGanancias;
@@ -105,10 +104,6 @@ namespace CapaDatos
 
 				SqlCmd.Parameters.Add("@ID", SqlDbType.Int).Value = _ID;
 				SqlCmd.Parameters.Add("@Fecha", SqlDbType.DateTime).Value = _Fecha;
-				SqlParameter ParPorcentIIBB = SqlCmd.Parameters.Add("@PorcentajeIIBB", SqlDbType.Decimal);
-				ParPorcentIIBB.Precision = 5;
-				ParPorcentIIBB.Scale = 4;
-				ParPorcentIIBB.Value = _PorcentajeIIBB;
 				SqlParameter ParMontoIIBB = SqlCmd.Parameters.Add("@MontoIIBB", SqlDbType.Decimal);
 				ParMontoIIBB.Precision = 15;
 				ParMontoIIBB.Scale = 2;

@@ -25,7 +25,6 @@ namespace CapaPresentacion
 		List<LineaIIBB> lineasIIBB;
 
 		decimal neto;
-		//decimal porcentajeIibb;
 		decimal iibb;
 		decimal porcentajeGanancias;
 		decimal ganancias;
@@ -43,6 +42,8 @@ namespace CapaPresentacion
 
 			DtpFechaIni.Value = DateTime.Now.AddYears(-1);
 			DtpFechaFin.Value = DateTime.Now.AddYears(1);
+
+			lineasIIBB = new List<LineaIIBB>();
 
 			lineasMovimientosPendientes = new List<LineaOrdenPago>();
 			/*for (int i = 0; i < 5; i++)
@@ -167,8 +168,6 @@ namespace CapaPresentacion
 
 			if (exento)
 			{
-				TxtPorcentajeIIBB.Text = "0.00";
-				TxtPorcentajeIIBB.Enabled = false;
 				TxtMontoIIBB.Text = "0.00";
 				TxtMontoIIBB.Enabled = false;
 				TxtPorcentajeGanancias.Text = "0.00";
@@ -178,7 +177,6 @@ namespace CapaPresentacion
 			}
 			else
 			{
-				TxtPorcentajeIIBB.Enabled = true;
 				TxtMontoIIBB.Enabled = true;
 				TxtPorcentajeGanancias.Enabled = true;
 				TxtMontoGanancias.Enabled = true;
@@ -252,7 +250,11 @@ namespace CapaPresentacion
 
 			for (int i = 0; i < pendientes.Rows.Count; i++)
 			{
-				decimal monto = NFacturasProveedores.MontoPendiente(Convert.ToInt32(pendientes.Rows[i]["ID"]));
+				decimal monto = Convert.ToDecimal(pendientes.Rows[i]["Total"]);
+				if (pendientes.Rows[i]["Estado"].ToString() == "P")
+				{
+					monto = NFacturasProveedores.MontoPendiente(Convert.ToInt32(pendientes.Rows[i]["ID"]));
+				}
 
 				LineaOrdenPago l = new LineaOrdenPago(this, i,
 					Convert.ToInt32(pendientes.Rows[i]["ID"]),
@@ -261,7 +263,9 @@ namespace CapaPresentacion
 					pendientes.Rows[i]["Contradocumento"].ToString(),
 					((DateTime)pendientes.Rows[i]["Fecha"]).ToString("yyyy-MM-dd"),
 					((DateTime)pendientes.Rows[i]["Vencimiento"]).ToString("yyyy-MM-dd"),
-					monto.ToString("N2", CultureInfo.InvariantCulture));
+					monto.ToString("N2", CultureInfo.InvariantCulture),
+					Convert.ToDecimal(pendientes.Rows[i]["NetoOriginal"]),
+					pendientes.Rows[i]["Estado"].ToString() == "P");
 				lineasMovimientosPendientes.Add(l);
 			}
 
@@ -297,9 +301,16 @@ namespace CapaPresentacion
 			neto = 0;
 			for (int i = 0; i < lineasMovimientosPendientes.Count; i++)
 			{
-				neto += lineasMovimientosPendientes[i].GetPago();
+				neto += lineasMovimientosPendientes[i].GetNeto();
 			}
-			//iibb = neto * porcentajeIibb;
+
+			iibb = 0;
+			for (int i = 0; i < lineasIIBB.Count; i++)
+			{
+				lineasIIBB[i].Monto = lineasIIBB[i].Porcentaje * neto;
+				iibb += lineasIIBB[i].Monto;
+			}
+			
 			Tools.TwoDecimalsNumberInTextBox(iibb, TxtMontoIIBB);
 			ganancias = neto * porcentajeGanancias;
 			Tools.TwoDecimalsNumberInTextBox(ganancias, TxtMontoGanancias);
@@ -332,14 +343,6 @@ namespace CapaPresentacion
 			}
 
 			NegocioResult r = NOrdenesPago.Validar(fecha, pagos);
-			if (!arbaCheck)
-			{
-				//r.AddError("El proveedor no se encuentra actualizado en el padron de ARBA.");
-			}
-			if (!cabaCheck)
-			{
-				//r.AddError("El proveedor no se encuentra actualizado en el padron de CABA.");
-			}
 
 			if (exento && (iibb != 0 || ganancias != 0))
 			{
@@ -349,7 +352,25 @@ namespace CapaPresentacion
 			if (r.IsOK)
 			{
 				//r = NOrdenesPago.Guardar(fecha, porcentajeIibb, iibb, porcentajeGanancias, ganancias, pagos);
-				r = NOrdenesPago.Guardar(fecha, 0, iibb, porcentajeGanancias, ganancias, pagos);
+				r = NOrdenesPago.Guardar(fecha, 0, porcentajeGanancias, ganancias, pagos);
+			}
+
+			// Guardar IIBB
+			if (r.IsOK)
+			{
+				//int opID = NOrdenesPago.GetOrdenPagoID(tipoMovimiento, txtCodigo.Text, cbbTipoFactura.SelectedItem.ToString(), txtSucursal.Text, txtDocumento.Text.ToUpper());
+				for (int i = 0; i < lineasIIBB.Count; i++)
+				{
+					/*r.AddResult(NLineaIIBB.InsertarLinea(
+						"OP", opID, lineasIIBB[i].Linea, NFacturasProveedores.LetraDeProvincia(lineasIIBB[i].Provincia),
+						lineasIIBB[i].Porcentaje, lineasIIBB[i].Monto));*/
+
+					if (!r.IsOK)
+					{
+						r.AddError("Error al intentar guardar la linea " + lineasIIBB[i].Linea + " de IIBB (" + lineasIIBB[i].Provincia + ").");
+						break;
+					}
+				}
 			}
 
 			if (r.IsOK)

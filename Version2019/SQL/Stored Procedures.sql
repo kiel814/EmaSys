@@ -300,14 +300,15 @@ AS
 GO
 
 CREATE PROCEDURE sp_InsertarLineaIIBB
-    @Movimiento     INT,
+    @DocType        VARCHAR(2),
+    @DocId          INT,
     @Linea          INT,
     @Provincia      VARCHAR(1),
     @Porcentaje     DECIMAL(5, 4),
     @Monto          DECIMAL(15, 2)
 AS
-    INSERT INTO IIBB ( Movimiento,  Linea,  Provincia,  Porcentaje,  Monto)
-	VALUES           (@Movimiento, @Linea, @Provincia, @Porcentaje, @Monto)
+    INSERT INTO IIBB ( DocType,  DocId,  Linea,  Provincia,  Porcentaje,  Monto)
+	VALUES           (@DocType, @DocId, @Linea, @Provincia, @Porcentaje, @Monto)
 
 GO
 
@@ -319,9 +320,10 @@ AS
 GO
 
 CREATE PROCEDURE sp_BorrarLineasIIBB
-    @Movimiento INT
+    @DocType        VARCHAR(2),
+    @DocId          INT
 AS
-    DELETE FROM IIBB WHERE Movimiento = @Movimiento
+    DELETE FROM IIBB WHERE DocType = @DocType AND DocId = @DocId
 
 GO
 
@@ -344,9 +346,10 @@ AS
 GO
 
 CREATE PROCEDURE sp_ListaLineasIIBB
-    @Movimiento VARCHAR(6)
+    @DocType        VARCHAR(2),
+    @DocId          INT
 AS
-    SELECT * FROM IIBB WHERE Movimiento = @Movimiento
+    SELECT * FROM IIBB WHERE DocType = @DocType AND DocId = @DocId
     ORDER BY Linea ASC
 
 GO
@@ -363,7 +366,9 @@ AS
         CONCAT(TipoFacturaOrig, ' ', SucursalOrig, '-', DocumentoOrig) AS Contradocumento,
         Fecha AS Fecha,
         Vencimiento AS Vencimiento,
-        Total AS Monto
+        Total AS Total,
+        MontoNeto AS NetoOriginal,
+        Estado AS Estado
     FROM MovimientosProveedores
     WHERE Proveedor = @Proveedor
     AND TipoMovimiento IN ('FA', 'DB')
@@ -434,15 +439,14 @@ GO
 CREATE PROCEDURE sp_InsertarOrdenPago
     @ID                     INT,
     @Fecha                  DATE,
-    @PorcentajeIIBB         DECIMAL(5, 4),
     @MontoIIBB              DECIMAL(15, 2),
     @PorcentajeGanancias    DECIMAL(5, 4),
     @MontoGanancias         DECIMAL(15, 2),
     @Estado                 VARCHAR(7)
 AS
     SET IDENTITY_INSERT OrdenesPago ON
-    INSERT INTO OrdenesPago ( ID,  Fecha,  PorcentajeIIBB,  MontoIIBB,  PorcentajeGanancias,  MontoGanancias,  Estado)
-	VALUES                  (@ID, @Fecha, @PorcentajeIIBB, @MontoIIBB, @PorcentajeGanancias, @MontoGanancias, @Estado)
+    INSERT INTO OrdenesPago ( ID,  Fecha,  MontoIIBB,  PorcentajeGanancias,  MontoGanancias,  Estado)
+	VALUES                  (@ID, @Fecha, @MontoIIBB, @PorcentajeGanancias, @MontoGanancias, @Estado)
     SET IDENTITY_INSERT OrdenesPago OFF
 GO
 

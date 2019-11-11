@@ -19,14 +19,16 @@ namespace CapaPresentacion
 		TextBox TxtPago;
 
 		decimal maximo;
+		decimal netoOriginal;
 		public decimal pago;
 		public int movimiento;
+		public bool pagosAnteriores;
 
 		FrmOrdenesPago parent;
 
 		bool mutex;
 
-		public LineaOrdenPago(FrmOrdenesPago _parent, int idx, int movimientoId, string tipo, string doc, string contradoc, string fecha, string vencimiento, string monto)
+		public LineaOrdenPago(FrmOrdenesPago _parent, int idx, int movimientoId, string tipo, string doc, string contradoc, string fecha, string vencimiento, string total, decimal _netoOriginal, bool _pagosAnteriores)
 		{
 			mutex = true;
 
@@ -34,9 +36,12 @@ namespace CapaPresentacion
 
 			parent = _parent;
 
-			maximo = Tools.StringToDecimal(monto, false);
-
+			// "total" es el total pendiente de pago
+			// "neto original" es el monto neto de la factura original, solo nos va a interesar en algunos casos
+			netoOriginal = _netoOriginal;
+			maximo = Tools.StringToDecimal(total, false);
 			pago = 0;
+			pagosAnteriores = _pagosAnteriores;
 
 			LblTipo = CreateLabel(parent, idx, tipo, 11);
 			LblDoc = CreateLabel(parent, idx, doc, 45);
@@ -45,7 +50,7 @@ namespace CapaPresentacion
 			LblVencimiento = CreateLabel(parent, idx, vencimiento, 393);
 
 			// LblMonto es diferente a todos los demás.
-			LblMonto = CreateLabel(parent, idx, monto, 487);
+			LblMonto = CreateLabel(parent, idx, total, 487);
 			LblMonto.AutoSize = false;
 			LblMonto.TextAlign = ContentAlignment.TopRight;
 			LblMonto.Width = 105;
@@ -121,8 +126,12 @@ namespace CapaPresentacion
 
 		public decimal GetNeto()
 		{
-			if (pago == maximo)
-			{ }
+			decimal neto = netoOriginal;
+			if (pagosAnteriores || pago != maximo)
+			{
+				neto = pago;
+			}
+			return neto;
 		}
 
 		public void RemoveFromContainer()

@@ -41,14 +41,15 @@ CREATE TABLE MovimientosProveedores (
 
 CREATE TABLE IIBB (
     ID                      INT IDENTITY (1, 1),
-    Movimiento              INT,
+    DocType                 VARCHAR(2),
+    DocId                   INT,
     Linea                   INT,
     Provincia               VARCHAR(1),
     Porcentaje              DECIMAL(5, 4),
     Monto                   DECIMAL(15, 2),
     
     CONSTRAINT PK_IIBB PRIMARY KEY (ID),
-    CONSTRAINT UC_IIBB_MovimientoLinea UNIQUE (Movimiento, Linea)
+    CONSTRAINT UC_IIBB_DocLinea UNIQUE (DocType, DocId, Linea)
 );
 
 CREATE TABLE Asientos (
@@ -83,7 +84,6 @@ CREATE TABLE Asientos (
 CREATE TABLE OrdenesPago (
     ID                      INT IDENTITY (1, 1),
     Fecha                   DATE,
-    PorcentajeIIBB          DECIMAL(5, 4),
     MontoIIBB               DECIMAL(15, 2),
     PorcentajeGanancias     DECIMAL(5, 4),
     MontoGanancias          DECIMAL(15, 2),

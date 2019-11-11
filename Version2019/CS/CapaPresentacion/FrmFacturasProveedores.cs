@@ -1065,7 +1065,7 @@ namespace CapaPresentacion
 				// Borrar lineas IIBB actuales.
 				if (result.IsOK)
 				{
-					if (!NFacturasProveedores.BorrarLineasIIBB(movimientoID))
+					if (!NFacturasProveedores.BorrarLineasIIBB("FA", movimientoID))
 					{
 						result.AddError("Error al eliminar IIBB anteriores.");
 					}
@@ -1132,7 +1132,7 @@ namespace CapaPresentacion
 				for (int i = 0; i < LineasIIBB.Count; i++)
 				{
 					result.AddResult(NLineaIIBB.InsertarLinea(
-						movimientoID, LineasIIBB[i].Linea, NFacturasProveedores.LetraDeProvincia(LineasIIBB[i].Provincia),
+						"FA", movimientoID, LineasIIBB[i].Linea, NFacturasProveedores.LetraDeProvincia(LineasIIBB[i].Provincia),
 						LineasIIBB[i].Porcentaje, LineasIIBB[i].Monto));
 
 					if (!result.IsOK)

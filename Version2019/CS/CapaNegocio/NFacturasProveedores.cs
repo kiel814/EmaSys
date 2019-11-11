@@ -397,9 +397,9 @@ namespace CapaNegocio
 			return DFacturasProveedores.LineasIIBB(movimientoID);
 		}
 
-		public static bool BorrarLineasIIBB(int movimientoID)
+		public static bool BorrarLineasIIBB(string docType, int docId)
 		{
-			return DFacturasProveedores.BorrarLineasIIBB(movimientoID);
+			return DFacturasProveedores.BorrarLineasIIBB(docType, docId);
 		}
 
 		public static DataTable MovimientosAPagar(string proveedor, DateTime fechaIni, DateTime fechaFin)

@@ -24,13 +24,12 @@ namespace CapaNegocio
 			return result;
 		}
 
-		public static NegocioResult Guardar(DateTime fecha, decimal porcIIBB, decimal montoIIBB, decimal porcGan, decimal monGan, List<Tuple<int, decimal>> pagos)
+		public static NegocioResult Guardar(DateTime fecha, decimal montoIIBB, decimal porcGan, decimal monGan, List<Tuple<int, decimal>> pagos)
 		{
 			NegocioResult result = new NegocioResult();
 
 			DOrdenesPago orden = new DOrdenesPago();
 			orden._Fecha = fecha;
-			orden._PorcentajeIIBB = porcIIBB;
 			orden._MontoIIBB = montoIIBB;
 			orden._PorcentajeGanancias = porcGan;
 			orden._MontoGanancias = monGan;

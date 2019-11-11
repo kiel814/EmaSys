@@ -598,7 +598,7 @@ namespace CapaDatos
 			return exito;
 		}
 
-		public static bool BorrarLineasIIBB(int movimientoID)
+		public static bool BorrarLineasIIBB(string docType, int docId)
 		{
 			bool exito = false;
 
@@ -612,7 +612,8 @@ namespace CapaDatos
 				SqlCmd.CommandText = "sp_BorrarLineasIIBB";
 				SqlCmd.CommandType = CommandType.StoredProcedure;
 
-				SqlCmd.Parameters.Add("@Movimiento", SqlDbType.Int).Value = movimientoID;
+				SqlCmd.Parameters.Add("@DocType", SqlDbType.VarChar, 2).Value = docType;
+				SqlCmd.Parameters.Add("@DocId", SqlDbType.Int).Value = docId;
 
 				int result = SqlCmd.ExecuteNonQuery();
 				exito = true;

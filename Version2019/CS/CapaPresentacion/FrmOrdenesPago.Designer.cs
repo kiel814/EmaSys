@@ -39,11 +39,11 @@
 			this.DgvListado = new System.Windows.Forms.DataGridView();
 			this.BtnEditar = new System.Windows.Forms.Button();
 			this.TabOrden = new System.Windows.Forms.TabPage();
+			this.BtnIIBB = new System.Windows.Forms.Button();
 			this.TxtMontoGanancias = new System.Windows.Forms.TextBox();
 			this.TxtPorcentajeGanancias = new System.Windows.Forms.TextBox();
 			this.label15 = new System.Windows.Forms.Label();
 			this.TxtMontoIIBB = new System.Windows.Forms.TextBox();
-			this.TxtPorcentajeIIBB = new System.Windows.Forms.TextBox();
 			this.label14 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
@@ -70,7 +70,6 @@
 			this.LblTotal = new System.Windows.Forms.Label();
 			this.BtnNueva = new System.Windows.Forms.Button();
 			this.BtnCancelar = new System.Windows.Forms.Button();
-			this.BtnIIBB = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.TabListadoPagos.SuspendLayout();
 			this.TabListado.SuspendLayout();
@@ -194,7 +193,6 @@
 			this.TabOrden.Controls.Add(this.TxtPorcentajeGanancias);
 			this.TabOrden.Controls.Add(this.label15);
 			this.TabOrden.Controls.Add(this.TxtMontoIIBB);
-			this.TabOrden.Controls.Add(this.TxtPorcentajeIIBB);
 			this.TabOrden.Controls.Add(this.label14);
 			this.TabOrden.Controls.Add(this.label13);
 			this.TabOrden.Controls.Add(this.label6);
@@ -219,6 +217,16 @@
 			this.TabOrden.TabIndex = 1;
 			this.TabOrden.Text = "Órden";
 			this.TabOrden.UseVisualStyleBackColor = true;
+			// 
+			// BtnIIBB
+			// 
+			this.BtnIIBB.Location = new System.Drawing.Point(85, 374);
+			this.BtnIIBB.Name = "BtnIIBB";
+			this.BtnIIBB.Size = new System.Drawing.Size(60, 23);
+			this.BtnIIBB.TabIndex = 87;
+			this.BtnIIBB.Text = "Editar...";
+			this.BtnIIBB.UseVisualStyleBackColor = true;
+			this.BtnIIBB.Click += new System.EventHandler(this.BtnIIBB_Click);
 			// 
 			// TxtMontoGanancias
 			// 
@@ -249,13 +257,6 @@
 			this.TxtMontoIIBB.Name = "TxtMontoIIBB";
 			this.TxtMontoIIBB.Size = new System.Drawing.Size(100, 20);
 			this.TxtMontoIIBB.TabIndex = 83;
-			// 
-			// TxtPorcentajeIIBB
-			// 
-			this.TxtPorcentajeIIBB.Location = new System.Drawing.Point(85, 376);
-			this.TxtPorcentajeIIBB.Name = "TxtPorcentajeIIBB";
-			this.TxtPorcentajeIIBB.Size = new System.Drawing.Size(60, 20);
-			this.TxtPorcentajeIIBB.TabIndex = 82;
 			// 
 			// label14
 			// 
@@ -513,16 +514,6 @@
 			this.BtnCancelar.Text = "Cancelar";
 			this.BtnCancelar.UseVisualStyleBackColor = true;
 			// 
-			// BtnIIBB
-			// 
-			this.BtnIIBB.Location = new System.Drawing.Point(280, 374);
-			this.BtnIIBB.Name = "BtnIIBB";
-			this.BtnIIBB.Size = new System.Drawing.Size(75, 23);
-			this.BtnIIBB.TabIndex = 87;
-			this.BtnIIBB.Text = "Editar...";
-			this.BtnIIBB.UseVisualStyleBackColor = true;
-			this.BtnIIBB.Click += new System.EventHandler(this.BtnIIBB_Click);
-			// 
 			// FrmOrdenesPago
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -588,7 +579,6 @@
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.TextBox TxtMontoIIBB;
-		private System.Windows.Forms.TextBox TxtPorcentajeIIBB;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.TextBox TxtMontoGanancias;
 		private System.Windows.Forms.TextBox TxtPorcentajeGanancias;
