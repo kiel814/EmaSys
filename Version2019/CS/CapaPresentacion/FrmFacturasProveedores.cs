@@ -217,7 +217,7 @@ namespace CapaPresentacion
 				
 				// Cargar IIBB de la factura original.
 				LineasIIBB.Clear();
-				DataTable lineasIIBB = NFacturasProveedores.LineasIIBB(movimientoID);
+				DataTable lineasIIBB = NFacturasProveedores.LineasIIBB(tipoMovimiento, movimientoID);
 				for (int i = 0; i < lineasIIBB.Rows.Count; i++)
 				{
 					AgregarLineaIIBB(

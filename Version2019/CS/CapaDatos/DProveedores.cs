@@ -854,6 +854,45 @@ namespace CapaDatos
 			return condicion;
 		}
 
+		public static int ObtenerId(string codigo)
+		{
+			int id = -1;
+			SqlConnection SqlCon = new SqlConnection();
+			try
+			{
+				SqlCon.ConnectionString = Conexion.Cn;
+				SqlCon.Open();
+
+				SqlCommand SqlCmd = new SqlCommand();
+				SqlCmd.Connection = SqlCon;
+				SqlCmd.CommandText = "sp_ObtenerProveedorId";
+				SqlCmd.CommandType = CommandType.StoredProcedure;
+
+				SqlParameter ParID = new SqlParameter();
+				ParID.ParameterName = "@ID";
+				ParID.SqlDbType = SqlDbType.Int;
+				ParID.Direction = ParameterDirection.Output;
+				SqlCmd.Parameters.Add(ParID);
+
+				SqlCmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 4).Value = codigo;
+
+				SqlCmd.ExecuteScalar();
+				id = Convert.ToInt32(ParID.Value);
+			}
+			catch (Exception ex)
+			{
+				string a = ex.ToString();
+			}
+			finally
+			{
+				if (SqlCon.State == ConnectionState.Open)
+				{
+					SqlCon.Close();
+				}
+			}
+			return id;
+		}
+
 		public static string ValidarPadronARBA(string codigo)
 		{
 			string resultado = "";

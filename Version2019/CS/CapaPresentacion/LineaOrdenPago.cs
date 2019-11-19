@@ -134,6 +134,12 @@ namespace CapaPresentacion
 			return neto;
 		}
 
+		public void PagarTodo()
+		{
+			Tools.TwoDecimalsNumberInTextBox(maximo, TxtPago);
+			pago = Tools.TextboxToDecimal(TxtPago, false);
+		}
+
 		public void RemoveFromContainer()
 		{
 			parent.Panel.Controls.Remove(LblTipo);

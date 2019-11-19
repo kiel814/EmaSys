@@ -392,9 +392,9 @@ namespace CapaNegocio
 			return DFacturasProveedores.LineasAsiento(asiento);
 		}
 
-		public static DataTable LineasIIBB(int movimientoID)
+		public static DataTable LineasIIBB(string docType, int docId)
 		{
-			return DFacturasProveedores.LineasIIBB(movimientoID);
+			return DFacturasProveedores.LineasIIBB(docType, docId);
 		}
 
 		public static bool BorrarLineasIIBB(string docType, int docId)

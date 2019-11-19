@@ -179,12 +179,6 @@ namespace CapaDatos
 				SqlCmd.CommandText = "sp_InsertarMovimientoProveedor";
 				SqlCmd.CommandType = CommandType.StoredProcedure;
 
-				SqlParameter ParID = new SqlParameter();
-				ParID.ParameterName = "@ID";
-				ParID.SqlDbType = SqlDbType.Int;
-				ParID.Direction = ParameterDirection.Output;
-				SqlCmd.Parameters.Add(ParID);
-
 				SqlCmd.Parameters.Add("@TipoMovimiento", SqlDbType.VarChar, 2).Value = _TipoMovimiento;
 				SqlCmd.Parameters.Add("@Proveedor", SqlDbType.VarChar, 4).Value = _CodigoProveedor;
 				SqlCmd.Parameters.Add("@TipoDocumento", SqlDbType.VarChar, 1).Value = _TipoDocumento;
@@ -331,11 +325,11 @@ namespace CapaDatos
 				SqlCmd.CommandText = "sp_GetMovimientoID";
 				SqlCmd.CommandType = CommandType.StoredProcedure;
 
-				SqlParameter ParExiste = new SqlParameter();
-				ParExiste.ParameterName = "@ID";
-				ParExiste.SqlDbType = SqlDbType.Int;
-				ParExiste.Direction = ParameterDirection.Output;
-				SqlCmd.Parameters.Add(ParExiste);
+				SqlParameter ParID = new SqlParameter();
+				ParID.ParameterName = "@ID";
+				ParID.SqlDbType = SqlDbType.Int;
+				ParID.Direction = ParameterDirection.Output;
+				SqlCmd.Parameters.Add(ParID);
 
 				SqlCmd.Parameters.Add("@TipoMovimiento", SqlDbType.VarChar, 2).Value = tipoMovimiento;
 				SqlCmd.Parameters.Add("@Proveedor", SqlDbType.VarChar, 4).Value = codigoProveedor;
@@ -343,9 +337,8 @@ namespace CapaDatos
 				SqlCmd.Parameters.Add("@Sucursal", SqlDbType.VarChar, 5).Value = sucursal;
 				SqlCmd.Parameters.Add("@Documento", SqlDbType.VarChar, 8).Value = documento;
 
-				// Ejecutar SP y convertir respuesta en bool
 				SqlCmd.ExecuteScalar();
-				id = Convert.ToInt32(ParExiste.Value);
+				id = Convert.ToInt32(ParID.Value);
 			}
 			catch (Exception ex)
 			{
@@ -684,7 +677,7 @@ namespace CapaDatos
 			return DtResultado;
 		}
 
-		public static DataTable LineasIIBB(int movimientoID)
+		public static DataTable LineasIIBB(string docType, int docId)
 		{
 			DataTable DtResultado = new DataTable("LineasIIBB");
 			SqlConnection SqlCon = new SqlConnection();
@@ -696,7 +689,8 @@ namespace CapaDatos
 				SqlCmd.CommandText = "sp_ListaLineasIIBB";
 				SqlCmd.CommandType = CommandType.StoredProcedure;
 
-				SqlCmd.Parameters.Add("@Movimiento", SqlDbType.Int).Value = movimientoID;
+				SqlCmd.Parameters.Add("@DocType", SqlDbType.VarChar, 2).Value = docType;
+				SqlCmd.Parameters.Add("@DocId", SqlDbType.Int).Value = docId;
 
 				SqlDataAdapter SqlDat = new SqlDataAdapter(SqlCmd);
 				SqlDat.Fill(DtResultado);

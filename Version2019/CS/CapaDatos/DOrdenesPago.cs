@@ -12,6 +12,7 @@ namespace CapaDatos
 	public class DOrdenesPago
 	{
 		public int _ID;
+		public int _Proveedor;
 		public DateTime _Fecha;
 		public decimal _MontoIIBB;
 		public decimal _PorcentajeGanancias;
@@ -103,6 +104,7 @@ namespace CapaDatos
 				SqlCmd.CommandType = CommandType.StoredProcedure;
 
 				SqlCmd.Parameters.Add("@ID", SqlDbType.Int).Value = _ID;
+				SqlCmd.Parameters.Add("@Proveedor", SqlDbType.Int).Value = _Proveedor;
 				SqlCmd.Parameters.Add("@Fecha", SqlDbType.DateTime).Value = _Fecha;
 				SqlParameter ParMontoIIBB = SqlCmd.Parameters.Add("@MontoIIBB", SqlDbType.Decimal);
 				ParMontoIIBB.Precision = 15;

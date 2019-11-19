@@ -20,6 +20,7 @@ namespace CapaPresentacion
 
 		bool arbaCheck;
 		bool cabaCheck;
+		int proveedorId;
 		bool exento;
 
 		List<LineaIIBB> lineasIIBB;
@@ -155,6 +156,8 @@ namespace CapaPresentacion
 
 		private void CheckProveedor()
 		{
+			proveedorId = NProveedores.ObtenerId(TxtCodigo.Text);
+
 			NegocioResult arba = NProveedores.ValidarPadronARBA(TxtCodigo.Text);
 			arbaCheck = arba.IsOK;
 			LblPadronARBA.Text = arbaCheck ? "OK" : arba.GetMessage();
@@ -181,56 +184,6 @@ namespace CapaPresentacion
 				TxtPorcentajeGanancias.Enabled = true;
 				TxtMontoGanancias.Enabled = true;
 			}
-
-			/*
-			// Despacho Importacion
-			bool conDespacho = false;
-			try
-			{
-				int cod = Convert.ToInt32(txtCodigo.Text);
-				if (cod >= 8000 && cod <= 8590)
-				{
-					conDespacho = true;
-				}
-			}
-			catch (Exception ex)
-			{
-				string a = ex.ToString();
-			}
-			if (conDespacho)
-			{
-				txtDespacho.Enabled = true;
-			}
-			else
-			{
-				txtDespacho.Text = "";
-				txtDespacho.Enabled = false;
-			}
-
-			// Condición de IVA
-			string CondicionIVA = NProveedores.CondicionIVA(txtCodigo.Text);
-			switch (CondicionIVA)
-			{
-				case "I":
-					cbbTipoFactura.SelectedIndex = 0;
-					txtPorcentajeIVA.Text = "21";
-					txtPorcentajeIVA_Leave(null, null);
-					break;
-				case "N":
-				case "E":
-				case "M":
-					cbbTipoFactura.SelectedIndex = 2;
-					txtPorcentajeIVA.Text = "0";
-					txtPorcentajeIVA_Leave(null, null);
-					break;
-				case "X":
-					cbbTipoFactura.SelectedIndex = 3;
-					txtPorcentajeIVA.Text = "0";
-					txtPorcentajeIVA_Leave(null, null);
-					break;
-				default:
-					break;
-			}*/
 		}
 
 		private void CleanListaMovimientos()
@@ -269,31 +222,25 @@ namespace CapaPresentacion
 				lineasMovimientosPendientes.Add(l);
 			}
 
-			// ver si es exento
+			lineasIIBB.Clear();
 			if (!exento)
 			{
-				// ver si esta en padron arba
 				if (arbaCheck)
 				{
-					// usar el porcentaje de arba
-					//porcentajeIibb = NProveedores.AlicuotaIIBB_ARBA(TxtCodigo.Text) / 100;
+					decimal arbaPorc = NProveedores.AlicuotaIIBB_ARBA(TxtCodigo.Text) / 100;
+					decimal arbaMonto = neto * arbaPorc;
+					lineasIIBB.Add(new LineaIIBB("Buenos Aires", arbaPorc, 0));
 				}
-				else if (cabaCheck)
+				if (cabaCheck)
 				{
-					// poner el porcentaje de caba
-					//porcentajeIibb = NProveedores.AlicuotaIIBB_CABA(TxtCodigo.Text) / 100;
+					decimal cabaPorc = NProveedores.AlicuotaIIBB_CABA(TxtCodigo.Text) / 100;
+					decimal cabaMonto = neto * cabaPorc;
+					lineasIIBB.Add(new LineaIIBB("Capital Federal", cabaPorc, 0));
 				}
 			}
-			//Tools.TwoDecimalsNumberInTextBox(porcentajeIibb, TxtPorcentajeIIBB, true);
+			ActualizarImpuestos();
 
-			/*if (arbaCheck || cabaCheck)
-			{
-				BtnGuardar.Enabled = true;
-			}
-			else
-			{
-				MessageBox.Show("Los padrones no se encuentra actualizados para este proveedor.", "Actualizar Padrón", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}*/
+			BtnGuardar.Enabled = true;
 		}
 
 		public void ActualizarNeto()
@@ -304,18 +251,23 @@ namespace CapaPresentacion
 				neto += lineasMovimientosPendientes[i].GetNeto();
 			}
 
+			ActualizarImpuestos();
+
+			ActualizarTotal();
+		}
+
+		public void ActualizarImpuestos()
+		{
 			iibb = 0;
 			for (int i = 0; i < lineasIIBB.Count; i++)
 			{
 				lineasIIBB[i].Monto = lineasIIBB[i].Porcentaje * neto;
 				iibb += lineasIIBB[i].Monto;
 			}
-			
 			Tools.TwoDecimalsNumberInTextBox(iibb, TxtMontoIIBB);
+
 			ganancias = neto * porcentajeGanancias;
 			Tools.TwoDecimalsNumberInTextBox(ganancias, TxtMontoGanancias);
-
-			ActualizarTotal();
 		}
 
 		public void ActualizarTotal()
@@ -352,7 +304,7 @@ namespace CapaPresentacion
 			if (r.IsOK)
 			{
 				//r = NOrdenesPago.Guardar(fecha, porcentajeIibb, iibb, porcentajeGanancias, ganancias, pagos);
-				r = NOrdenesPago.Guardar(fecha, 0, porcentajeGanancias, ganancias, pagos);
+				r = NOrdenesPago.Guardar(proveedorId, fecha, 0, porcentajeGanancias, ganancias, pagos);
 			}
 
 			// Guardar IIBB
@@ -405,6 +357,20 @@ namespace CapaPresentacion
 				iibb += lineasIIBB[i].Monto;
 			}
 			Tools.TwoDecimalsNumberInTextBox(iibb, TxtMontoIIBB);
+			ActualizarTotal();
+		}
+
+		private void btnTodo_Click(object sender, EventArgs e)
+		{
+			for (int i = 0; i < lineasMovimientosPendientes.Count; i++)
+			{
+				lineasMovimientosPendientes[i].PagarTodo();
+			}
+
+			ActualizarNeto();
+
+			ActualizarImpuestos();
+
 			ActualizarTotal();
 		}
 	}

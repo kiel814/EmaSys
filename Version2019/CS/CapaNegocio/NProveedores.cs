@@ -159,6 +159,11 @@ namespace CapaNegocio
 			return DProveedores.CondicionIVA(codigo);
 		}
 
+		public static int ObtenerId(string codigo)
+		{
+			return DProveedores.ObtenerId(codigo);
+		}
+
 		public static NegocioResult ValidarPadronARBA(string codigo)
 		{
 			NegocioResult r = new NegocioResult();

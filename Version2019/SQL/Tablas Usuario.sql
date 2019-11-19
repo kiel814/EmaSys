@@ -83,6 +83,7 @@ CREATE TABLE Asientos (
 
 CREATE TABLE OrdenesPago (
     ID                      INT IDENTITY (1, 1),
+    Proveedor               INT,
     Fecha                   DATE,
     MontoIIBB               DECIMAL(15, 2),
     PorcentajeGanancias     DECIMAL(5, 4),

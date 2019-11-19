@@ -10,6 +10,7 @@ DROP PROCEDURE IF EXISTS sp_FacturaProveedorPorID;
 
 DROP PROCEDURE IF EXISTS sp_ProveedorCodigoNombre;
 DROP PROCEDURE IF EXISTS sp_CondicionIVA
+DROP PROCEDURE IF EXISTS sp_ObtenerProveedorId
 
 DROP PROCEDURE IF EXISTS sp_ListaCuentasDescripcion;
 DROP PROCEDURE IF EXISTS sp_InsertarMovimientoProveedor;
@@ -115,6 +116,14 @@ AS
     
 GO
 
+CREATE PROCEDURE sp_ObtenerProveedorId
+    @ID         INT OUTPUT,
+    @Codigo     VARCHAR(4)
+AS
+    SET @ID = (SELECT ProveedorID FROM Proveedores WHERE ProCodigo = @Codigo)
+    
+GO
+
 CREATE PROCEDURE sp_ListaCuentasDescripcion
 AS
     SELECT Cuenta, Descripcion FROM Cuentas
@@ -123,7 +132,6 @@ AS
 GO
 
 CREATE PROCEDURE sp_InsertarMovimientoProveedor
-    @ID                         INT OUTPUT,
     @TipoMovimiento             VARCHAR(2),
     @Proveedor                  VARCHAR(4),
     @TipoDocumento              VARCHAR(1),
@@ -438,6 +446,7 @@ GO
 
 CREATE PROCEDURE sp_InsertarOrdenPago
     @ID                     INT,
+    @Proveedor              INT,
     @Fecha                  DATE,
     @MontoIIBB              DECIMAL(15, 2),
     @PorcentajeGanancias    DECIMAL(5, 4),
@@ -445,8 +454,8 @@ CREATE PROCEDURE sp_InsertarOrdenPago
     @Estado                 VARCHAR(7)
 AS
     SET IDENTITY_INSERT OrdenesPago ON
-    INSERT INTO OrdenesPago ( ID,  Fecha,  MontoIIBB,  PorcentajeGanancias,  MontoGanancias,  Estado)
-	VALUES                  (@ID, @Fecha, @MontoIIBB, @PorcentajeGanancias, @MontoGanancias, @Estado)
+    INSERT INTO OrdenesPago ( ID,  Proveedor,  Fecha,  MontoIIBB,  PorcentajeGanancias,  MontoGanancias,  Estado)
+	VALUES                  (@ID, @Proveedor, @Fecha, @MontoIIBB, @PorcentajeGanancias, @MontoGanancias, @Estado)
     SET IDENTITY_INSERT OrdenesPago OFF
 GO
 

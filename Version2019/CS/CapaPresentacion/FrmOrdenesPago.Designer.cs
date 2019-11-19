@@ -70,6 +70,7 @@
 			this.LblTotal = new System.Windows.Forms.Label();
 			this.BtnNueva = new System.Windows.Forms.Button();
 			this.BtnCancelar = new System.Windows.Forms.Button();
+			this.btnTodo = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.TabListadoPagos.SuspendLayout();
 			this.TabListado.SuspendLayout();
@@ -188,6 +189,7 @@
 			// 
 			// TabOrden
 			// 
+			this.TabOrden.Controls.Add(this.btnTodo);
 			this.TabOrden.Controls.Add(this.BtnIIBB);
 			this.TabOrden.Controls.Add(this.TxtMontoGanancias);
 			this.TabOrden.Controls.Add(this.TxtPorcentajeGanancias);
@@ -354,9 +356,9 @@
 			this.label10.AutoSize = true;
 			this.label10.Location = new System.Drawing.Point(487, 10);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(37, 13);
+			this.label10.Size = new System.Drawing.Size(101, 13);
 			this.label10.TabIndex = 75;
-			this.label10.Text = "Monto";
+			this.label10.Text = "Deuda c/Impuestos";
 			// 
 			// label9
 			// 
@@ -514,6 +516,16 @@
 			this.BtnCancelar.Text = "Cancelar";
 			this.BtnCancelar.UseVisualStyleBackColor = true;
 			// 
+			// btnTodo
+			// 
+			this.btnTodo.Location = new System.Drawing.Point(663, 99);
+			this.btnTodo.Name = "btnTodo";
+			this.btnTodo.Size = new System.Drawing.Size(88, 23);
+			this.btnTodo.TabIndex = 88;
+			this.btnTodo.Text = "Pagar Todo";
+			this.btnTodo.UseVisualStyleBackColor = true;
+			this.btnTodo.Click += new System.EventHandler(this.btnTodo_Click);
+			// 
 			// FrmOrdenesPago
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -584,5 +596,6 @@
 		private System.Windows.Forms.TextBox TxtPorcentajeGanancias;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Button BtnIIBB;
+		private System.Windows.Forms.Button btnTodo;
 	}
 }
